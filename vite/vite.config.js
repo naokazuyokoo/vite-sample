@@ -30,15 +30,16 @@ function hotFilePlugin() {
 }
 
 export default defineConfig({
-  plugins: [liveReload(__dirname + '/**/*.php'), mkcert(), hotFilePlugin()],
+  plugins: [liveReload(path.resolve(__dirname, '../**/*.php')), mkcert(), hotFilePlugin()],
   root: '',
   base: process.env.NODE_ENV === 'development' ? '/' : './',
+  envDir: __dirname,
   build: {
     outDir: path.resolve(__dirname, './dist'),
     emptyOutDir: true,
     manifest: true,
     rollupOptions: {
-      input: path.resolve(__dirname, 'main.js'),
+      input: path.resolve(__dirname, 'src/main.js'),
     },
     assetsDir: '',
   },

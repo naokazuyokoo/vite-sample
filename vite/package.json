@@ -4,8 +4,9 @@
   "private": true,
   "description": "Minimal standalone WordPress theme with Vite",
   "scripts": {
-    "dev": "bash -lc 'trap \"npm run build; trap - EXIT\" INT TERM EXIT; vite'",
-    "build": "vite build"
+    "predev": "bash ./set-vite-dev-host.sh",
+    "dev": "bash -lc 'trap \"npm run build; trap - EXIT\" INT TERM EXIT; vite --config ./vite.config.js'",
+    "build": "vite build --config ./vite.config.js"
   },
   "devDependencies": {
     "lightningcss": "^1.31.1",
