@@ -5,6 +5,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 THEME_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 WP_ROOT="$(cd "${THEME_DIR}/../../.." && pwd)"
 ENV_FILE="${SCRIPT_DIR}/.env.local"
+HOME_URL_FILE="${SCRIPT_DIR}/.wp-home-url"
+HOT_FILE="${SCRIPT_DIR}/.hot"
+
+# Clear stale hot marker from previous runs to avoid opening the browser too early.
+rm -f "${HOT_FILE}"
 
 if ! command -v wp >/dev/null 2>&1; then
   echo "[set-vite-dev-host] wp command not found. Skip updating ${ENV_FILE}."
@@ -28,6 +33,8 @@ if [ -z "${HOME_URL}" ]; then
   exit 0
 fi
 
+printf '%s\n' "${HOME_URL}" > "${HOME_URL_FILE}"
+
 HOST="$(printf '%s' "${HOME_URL}" | sed -E 's#^[a-zA-Z]+://##; s#/.*$##')"
 if [ -z "${HOST}" ]; then
   echo "[set-vite-dev-host] Could not parse host from: ${HOME_URL}"
@@ -36,15 +43,13 @@ fi
 
 TMP_FILE="$(mktemp)"
 if [ -f "${ENV_FILE}" ]; then
-  grep -v '^VITE_DEV_SERVER_HOST=' "${ENV_FILE}" > "${TMP_FILE}" || true
+  # Keep only valid KEY=VALUE lines and drop the target key before rewriting.
+  grep -E '^[A-Za-z_][A-Za-z0-9_]*=.*$' "${ENV_FILE}" \
+    | grep -v '^VITE_DEV_SERVER_HOST=' > "${TMP_FILE}" || true
 fi
 
 printf 'VITE_DEV_SERVER_HOST=%s\n' "${HOST}" >> "${TMP_FILE}"
 mv "${TMP_FILE}" "${ENV_FILE}"
 
 echo "[set-vite-dev-host] Updated VITE_DEV_SERVER_HOST=${HOST} in ${ENV_FILE}"
-
-if command -v open >/dev/null 2>&1; then
-  open "${HOME_URL}" >/dev/null 2>&1 || true
-  echo "[set-vite-dev-host] Opened ${HOME_URL} in browser."
-fi
+echo "[set-vite-dev-host] Done. Browser will open after Vite is ready."

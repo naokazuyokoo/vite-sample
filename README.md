@@ -99,7 +99,9 @@ npm run build
 npm run dev
 ```
 
-`npm run dev` 実行前に `wp option get home` からホスト名を取得し、`.env.local` の `VITE_DEV_SERVER_HOST` を自動更新します（`wp` コマンドが使える環境が前提）。macOS では同時に検出した WordPress URL をブラウザで開きます。
+`npm run dev` 実行前に `wp option get home` からホスト名を取得し、`.env.local` の `VITE_DEV_SERVER_HOST` を自動更新します（`wp` コマンドが使える環境が前提）。
+
+`npm run dev` では `VITE ready` 後に WordPress URL を自動でブラウザ起動します。
 
 `npm run dev` 実行中は `vite/.hot` を使って Vite 開発サーバーを読み込みます。
 

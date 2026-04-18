@@ -1,3 +1,5 @@
 node_modules/
 vite/dist/
 vite/.hot
+vite/.env.local
+vite/.wp-home-url

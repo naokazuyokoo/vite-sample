@@ -35,6 +35,8 @@ add_action('wp_enqueue_scripts', static function (): void {
   if ($server !== null) {
     wp_enqueue_script('vs-vite-client', $server . '/@vite/client', [], null, true);
     wp_enqueue_script('vs-main', $server . '/' . VS_VITE_ENTRY, [], null, true);
+    wp_script_add_data('vs-vite-client', 'type', 'module');
+    wp_script_add_data('vs-main', 'type', 'module');
     return;
   }
 
@@ -52,6 +54,7 @@ add_action('wp_enqueue_scripts', static function (): void {
 
   if (!empty($entry['file'])) {
     wp_enqueue_script('vs-main', get_theme_file_uri('/vite/dist/' . $entry['file']), [], null, true);
+    wp_script_add_data('vs-main', 'type', 'module');
   }
 
   if (!empty($entry['css']) && is_array($entry['css'])) {
@@ -61,10 +64,14 @@ add_action('wp_enqueue_scripts', static function (): void {
   }
 }, 20);
 
-add_filter('script_loader_tag', static function (string $tag, string $handle, string $src): string {
-  if (in_array($handle, ['vs-vite-client', 'vs-main'], true)) {
-    return '<script type="module" src="' . esc_url($src) . '"></script>';
+add_filter('script_loader_tag', static function (string $tag, string $handle): string {
+  if (!in_array($handle, ['vs-vite-client', 'vs-main'], true)) {
+    return $tag;
   }
 
-  return $tag;
-}, 10, 3);
+  if (strpos($tag, 'type=') !== false) {
+    return (string) preg_replace('/type=("|\')[^"\']*("|\')/', 'type="module"', $tag, 1);
+  }
+
+  return (string) preg_replace('/<script\b/', '<script type="module"', $tag, 1);
+}, 10, 2);
