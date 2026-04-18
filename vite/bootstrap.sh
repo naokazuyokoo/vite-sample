@@ -179,12 +179,28 @@ else
 fi
 
 if confirm_block \
-  "Build frontend assets." \
-  "npm run build"; then
-  npm run build
-  print_step_result "npm run build completed."
+  "Start frontend development server." \
+  "npm run dev"; then
+  npm run dev
+  print_step_result "npm run dev completed."
 else
-  echo "Skipped npm run build."
+  echo "Skipped npm run dev."
+fi
+
+if confirm_block \
+  "Reload ~/.zshrc for the current login shell (to make npm available after this script)." \
+  "zsh -ic 'source ~/.zshrc'"; then
+  if command -v zsh >/dev/null 2>&1; then
+    # This reloads zsh config in a child zsh process only.
+    zsh -ic 'source ~/.zshrc'
+    print_step_result "~/.zshrc reloaded in child zsh. If npm is still unavailable in your current terminal, run: source ~/.zshrc"
+  else
+    echo "zsh is not available. Run this manually in your terminal: source ~/.zshrc"
+    print_separator
+    echo ""
+  fi
+else
+  echo "Skipped ~/.zshrc reload."
 fi
 
 echo "Bootstrap finished."

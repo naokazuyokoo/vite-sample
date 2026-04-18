@@ -23,7 +23,12 @@ cd wp-content/themes/vite-sample/vite
 3. `~/.zshrc` へ `fnm` 設定の追記（重複防止）
 4. Node.js LTS の導入（`node` 未導入時）
 5. `npm install`
-6. `npm run build`
+6. `npm run dev`
+
+補足（`~/.zshrc` の反映範囲）:
+
+- `bootstrap.sh` の最後で実行される `zsh -ic 'source ~/.zshrc'` は、子プロセスの zsh にだけ反映されます。
+- そのため、現在開いているターミナル（親シェル）に反映したい場合は、ユーザー側で `source ~/.zshrc` を実行するか、ターミナルを再起動してください。
 
 ## 手動セットアップ（コピペ実行）
 
