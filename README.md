@@ -2,6 +2,20 @@
 
 WordPress テーマで Vite を使う最小サンプルです。
 
+新規テーマの土台としても使えますが、主な狙いは「既存の WordPress テーマに Vite を後付けするときの最小構成」を読める形で示すことです。
+
+## 既存テーマに組み込む場合
+
+既存テーマへ追加する場合は、テーマ直下に `vite/` ディレクトリをコピーし、既存テーマの `functions.php` から `vite/vite.php` を読み込みます。
+
+```php
+require_once get_theme_file_path('/vite/vite.php');
+```
+
+このサンプルは既存テンプレート構造の置き換えを前提にしていません。`header.php`、`footer.php`、`template-parts/` などはそのままにして、Vite で管理したい JS / Sass の entry point を `vite/src/main.js` から追加していく想定です。
+
+後付け専用ではないため、サンプルテーマとしてそのまま有効化して動作確認することもできます。
+
 ## bootstrap.sh でセットアップ（推奨）
 
 `bootstrap.sh` は、対話式（`y/n`）で 1 ステップずつ確認しながら実行します。
